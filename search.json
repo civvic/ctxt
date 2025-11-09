@@ -1,0 +1,172 @@
+[
+  {
+    "objectID": "cli.html",
+    "href": "cli.html",
+    "title": "cli",
+    "section": "",
+    "text": "source\n\n\n\n init (force:bool=False)\n\nInitialize ctxt config from default template\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nforce\nbool\nFalse\nOverwrite existing config\n\n\n\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_cwd = os.getcwd()\n    try:\n        os.chdir(tmpdir)\n        \n        # Test 1: Fresh init\n        result = init()\n        test_eq(result, 0)\n        test_eq(Path('.ctxt.yml').exists(), True)\n        \n        # Test 2: Already exists without force\n        result = init()\n        test_eq(result, 1)\n        \n        # Test 3: Force overwrite\n        result = init(force=True)\n        test_eq(result, 0)\n    finally:\n        os.chdir(old_cwd)\n\n✓ Created .ctxt.yml\n\nNext steps:\n  1. Edit .ctxt.yml to customize tags\n  2. Create templates/ directory structure\n  3. Run 'ctxt build' to process templates\nConfig already exists: .ctxt.yml\nUse --force to overwrite\n✓ Created .ctxt.yml\n\nNext steps:\n  1. Edit .ctxt.yml to customize tags\n  2. Create templates/ directory structure\n  3. Run 'ctxt build' to process templates\n\n\n\n\n\n\n\nsource\n\n\n\n config_cmd (validate:bool=False)\n\nShow and optionally validate configuration\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nvalidate\nbool\nFalse\nValidate configuration\n\n\n\n\n# Test with real config\nresult = config_cmd()\ntest_eq(result, 0)\n\nresult = config_cmd(validate=True)\ntest_eq(result, 0)\n\n# Test with defaults (no config file)\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_cwd = os.getcwd()\n    try:\n        os.chdir(tmpdir)\n        result = config_cmd()\n        test_eq(result, 0)\n    finally:\n        os.chdir(old_cwd)\n\nConfig: /Users/vic/dev/repo/project/ctxt/.ctxt.yml\nTags: 7\nVendors: 2\n  • meta (project files)\n  • Cursor\n  • Claude_Coder\nConfig: /Users/vic/dev/repo/project/ctxt/.ctxt.yml\nTags: 7\nVendors: 2\n  • meta (project files)\n  • Cursor\n  • Claude_Coder\n\n✓ Configuration is valid\nConfig: (using defaults)\nTags: 7\nVendors: 2\n  • meta (project files)\n  • Cursor\n  • Claude_Coder\n\n\n\n\n\n\n\nsource\n\n\n\n tags (path:str|None=None)\n\nDiscover tags in templates\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\npath\nstr | None\nNone\nPath to template file or directory\n\n\n\n\n# Test with real templates\nresult = tags()\ntest_eq(result, 0)\n\n# Test with specific file\ntemplate_file = Path('../templates/Cursor/project.mdc')\nif template_file.exists():\n    result = tags(path=str(template_file))\n    test_eq(result, 0)\n\n# Test with nonexistent path\nresult = tags(path='/nonexistent/path')\ntest_eq(result, 1)\n\n# Test with no templates dir\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_cwd = os.getcwd()\n    try:\n        os.chdir(tmpdir)\n        result = tags()\n        test_eq(result, 1)\n    finally:\n        os.chdir(old_cwd)\n\nTags in templates:\n  &lt;Language-Name&gt; ✓\n  &lt;Project-Current-Phase&gt; ✓\n  &lt;Project-Name&gt; ✓\n  &lt;Project-Objective&gt; ✓\n  &lt;User-Alias&gt; ✓\n  &lt;User-Language-Note&gt; ✓\n  &lt;User-Profile&gt; ✓\n  &lt;date&gt; ✗ (not defined)\n  &lt;file_name&gt; ✗ (not defined)\n  &lt;name&gt; ✗ (not defined)\n  &lt;session_history&gt; ✗ (not defined)\nTags in ../templates/Cursor/project.mdc:\n  &lt;Project-Current-Phase&gt; ✓\n  &lt;Project-Name&gt; ✓\n  &lt;Project-Objective&gt; ✓\nError: Path not found: /nonexistent/path\nTemplates directory not found at /private/var/folders/np/k2wj6f4s3rj0m9n0yt8pkk680000gn/T/tmpj5ky4svi/templates\nCreate 'templates/' or specify path with --path\n\n\n\n\n\n\n\nsource\n\n\n\n build (vendor:str|None=None, dry_run:bool=False)\n\nBuild templates from source\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nvendor\nstr | None\nNone\nSpecific vendor to build (e.g., ‘Cursor’)\n\n\ndry_run\nbool\nFalse\nShow what would be done without doing it\n\n\n\n\n# Test build (dry run to avoid side effects)\nresult = build(dry_run=True)\ntest_eq(result, 0)\n\n# Test with nonexistent vendor\nresult = build(vendor='NonExistent')\ntest_eq(result, 1)\n\nDRY RUN - No files will be created\nBuilding all templates...\nBuilding NonExistent templates...\nError during build: Vendor 'NonExistent' not found in config\n\n\n\nsource\n\n\n\n\n chelp ()\n\nShow help for all console scripts\n\nchelp()\n\n\nctxt                      Build templates from source\n\nctxt-config               Show and optionally validate configuration\n\nctxt-init                 Initialize ctxt config from default template\n\nctxt-tags                 Discover tags in templates",
+    "crumbs": [
+      "cli"
+    ]
+  },
+  {
+    "objectID": "cli.html#init",
+    "href": "cli.html#init",
+    "title": "cli",
+    "section": "",
+    "text": "source\n\n\n\n init (force:bool=False)\n\nInitialize ctxt config from default template\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nforce\nbool\nFalse\nOverwrite existing config\n\n\n\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_cwd = os.getcwd()\n    try:\n        os.chdir(tmpdir)\n        \n        # Test 1: Fresh init\n        result = init()\n        test_eq(result, 0)\n        test_eq(Path('.ctxt.yml').exists(), True)\n        \n        # Test 2: Already exists without force\n        result = init()\n        test_eq(result, 1)\n        \n        # Test 3: Force overwrite\n        result = init(force=True)\n        test_eq(result, 0)\n    finally:\n        os.chdir(old_cwd)\n\n✓ Created .ctxt.yml\n\nNext steps:\n  1. Edit .ctxt.yml to customize tags\n  2. Create templates/ directory structure\n  3. Run 'ctxt build' to process templates\nConfig already exists: .ctxt.yml\nUse --force to overwrite\n✓ Created .ctxt.yml\n\nNext steps:\n  1. Edit .ctxt.yml to customize tags\n  2. Create templates/ directory structure\n  3. Run 'ctxt build' to process templates",
+    "crumbs": [
+      "cli"
+    ]
+  },
+  {
+    "objectID": "cli.html#config",
+    "href": "cli.html#config",
+    "title": "cli",
+    "section": "",
+    "text": "source\n\n\n\n config_cmd (validate:bool=False)\n\nShow and optionally validate configuration\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nvalidate\nbool\nFalse\nValidate configuration\n\n\n\n\n# Test with real config\nresult = config_cmd()\ntest_eq(result, 0)\n\nresult = config_cmd(validate=True)\ntest_eq(result, 0)\n\n# Test with defaults (no config file)\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_cwd = os.getcwd()\n    try:\n        os.chdir(tmpdir)\n        result = config_cmd()\n        test_eq(result, 0)\n    finally:\n        os.chdir(old_cwd)\n\nConfig: /Users/vic/dev/repo/project/ctxt/.ctxt.yml\nTags: 7\nVendors: 2\n  • meta (project files)\n  • Cursor\n  • Claude_Coder\nConfig: /Users/vic/dev/repo/project/ctxt/.ctxt.yml\nTags: 7\nVendors: 2\n  • meta (project files)\n  • Cursor\n  • Claude_Coder\n\n✓ Configuration is valid\nConfig: (using defaults)\nTags: 7\nVendors: 2\n  • meta (project files)\n  • Cursor\n  • Claude_Coder",
+    "crumbs": [
+      "cli"
+    ]
+  },
+  {
+    "objectID": "cli.html#tags",
+    "href": "cli.html#tags",
+    "title": "cli",
+    "section": "",
+    "text": "source\n\n\n\n tags (path:str|None=None)\n\nDiscover tags in templates\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\npath\nstr | None\nNone\nPath to template file or directory\n\n\n\n\n# Test with real templates\nresult = tags()\ntest_eq(result, 0)\n\n# Test with specific file\ntemplate_file = Path('../templates/Cursor/project.mdc')\nif template_file.exists():\n    result = tags(path=str(template_file))\n    test_eq(result, 0)\n\n# Test with nonexistent path\nresult = tags(path='/nonexistent/path')\ntest_eq(result, 1)\n\n# Test with no templates dir\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_cwd = os.getcwd()\n    try:\n        os.chdir(tmpdir)\n        result = tags()\n        test_eq(result, 1)\n    finally:\n        os.chdir(old_cwd)\n\nTags in templates:\n  &lt;Language-Name&gt; ✓\n  &lt;Project-Current-Phase&gt; ✓\n  &lt;Project-Name&gt; ✓\n  &lt;Project-Objective&gt; ✓\n  &lt;User-Alias&gt; ✓\n  &lt;User-Language-Note&gt; ✓\n  &lt;User-Profile&gt; ✓\n  &lt;date&gt; ✗ (not defined)\n  &lt;file_name&gt; ✗ (not defined)\n  &lt;name&gt; ✗ (not defined)\n  &lt;session_history&gt; ✗ (not defined)\nTags in ../templates/Cursor/project.mdc:\n  &lt;Project-Current-Phase&gt; ✓\n  &lt;Project-Name&gt; ✓\n  &lt;Project-Objective&gt; ✓\nError: Path not found: /nonexistent/path\nTemplates directory not found at /private/var/folders/np/k2wj6f4s3rj0m9n0yt8pkk680000gn/T/tmpj5ky4svi/templates\nCreate 'templates/' or specify path with --path",
+    "crumbs": [
+      "cli"
+    ]
+  },
+  {
+    "objectID": "cli.html#build",
+    "href": "cli.html#build",
+    "title": "cli",
+    "section": "",
+    "text": "source\n\n\n\n build (vendor:str|None=None, dry_run:bool=False)\n\nBuild templates from source\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nvendor\nstr | None\nNone\nSpecific vendor to build (e.g., ‘Cursor’)\n\n\ndry_run\nbool\nFalse\nShow what would be done without doing it\n\n\n\n\n# Test build (dry run to avoid side effects)\nresult = build(dry_run=True)\ntest_eq(result, 0)\n\n# Test with nonexistent vendor\nresult = build(vendor='NonExistent')\ntest_eq(result, 1)\n\nDRY RUN - No files will be created\nBuilding all templates...\nBuilding NonExistent templates...\nError during build: Vendor 'NonExistent' not found in config\n\n\n\nsource\n\n\n\n\n chelp ()\n\nShow help for all console scripts\n\nchelp()\n\n\nctxt                      Build templates from source\n\nctxt-config               Show and optionally validate configuration\n\nctxt-init                 Initialize ctxt config from default template\n\nctxt-tags                 Discover tags in templates",
+    "crumbs": [
+      "cli"
+    ]
+  },
+  {
+    "objectID": "tags.html",
+    "href": "tags.html",
+    "title": "tags",
+    "section": "",
+    "text": "Tag Discovery\n\nsource\n\ndiscover_tags\n\n discover_tags (text:str)\n\nFind all  patterns in text\n\ntext = \"Hello &lt;User-Name&gt;, welcome to &lt;Project-Name&gt;!\"\ntags = discover_tags(text)\ntest_eq(tags, {'User-Name', 'Project-Name'})\n\ntest_eq(discover_tags(\"No tags here\"), set())\n\ntext_dup = \"&lt;Tag1&gt; and &lt;Tag2&gt; and &lt;Tag1&gt; again\"\ntest_eq(discover_tags(text_dup), {'Tag1', 'Tag2'})\n\n\nsource\n\n\ndiscover_tags_in_file\n\n discover_tags_in_file (path:str|pathlib.Path)\n\nFind all tags in a file, return empty set on error\n\ntemplate_file = Path('../templates/Cursor/project.mdc')\nif template_file.exists():\n    tags_in_file = discover_tags_in_file(template_file)\n    test_is('Project-Name' in tags_in_file, True)\n    test_is('Project-Objective' in tags_in_file, True)\n\n\nsource\n\n\ndiscover_tags_in_templates\n\n discover_tags_in_templates (template_dir:str|pathlib.Path,\n                             extensions:list[str]|None=None)\n\nDiscover all tags in template files Returns dict mapping file paths to sets of tags found in each file\n\n# Test discover_tags_in_templates\ntemplates_dir = Path('../templates')\nif templates_dir.exists():\n    all_tags = discover_tags_in_templates(templates_dir)\n    test_is(len(all_tags) &gt; 0, True)  # Should find some files with tags\n    test_is(isinstance(all_tags, dict), True)\n\n\n\n\nTag Substitution\n\nsource\n\nsubstitute_tags\n\n substitute_tags (text:str, tags:dict[str,str], max_depth:int=10,\n                  warn_missing:bool=False)\n\nRecursively substitute tags in text\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\ntext\nstr\n\nText containing tags to substitute\n\n\ntags\ndict\n\nDictionary mapping tag names to values\n\n\nmax_depth\nint\n10\nMaximum recursion depth for nested tags\n\n\nwarn_missing\nbool\nFalse\nIf True, print warnings for missing tags\n\n\nReturns\nstr\n\n\n\n\n\n\ntext = \"Hello &lt;User-Name&gt;, welcome to &lt;Project-Name&gt;!\"\ntags = {'User-Name': 'Vic', 'Project-Name': 'ctxt'}\nresult = substitute_tags(text, tags)\ntest_eq(result, \"Hello Vic, welcome to ctxt!\")\n\ntags_nested = {\n    'Name': 'Vic',\n    'Greeting': 'Hello &lt;Name&gt;',\n    'Message': '&lt;Greeting&gt;, welcome!'\n}\nresult = substitute_tags('&lt;Message&gt;', tags_nested)\ntest_eq(result, 'Hello Vic, welcome!')\n\ntext = \"Hello &lt;Missing-Tag&gt;\"\nresult = substitute_tags(text, {})\ntest_eq(result, \"Hello &lt;Missing-Tag&gt;\")  # Should leave as-is\n\n\n# Test recursion limit protection\ncircular_tags = {\n    'A': 'Value with &lt;B&gt;',\n    'B': 'Value with &lt;A&gt;'\n}\ntest_eq(substitute_tags('&lt;A&gt;', circular_tags, max_depth=5), 'Value with Value with Value with Value with Value with &lt;B&gt;')\n\nWarning: Max recursion depth (5) reached. Unresolved tags: {'B'}\n\n\n\nsource\n\n\nsubstitute_tags_in_file\n\n substitute_tags_in_file (src:str|pathlib.Path, dst:str|pathlib.Path,\n                          tags:dict[str,str], **options)\n\nProcess file with tag substitution and write to destination\n\n\n\n\n\n\n\n\n\nType\nDetails\n\n\n\n\nsrc\nstr | pathlib.Path\nSource file path\n\n\ndst\nstr | pathlib.Path\nDestination file path\n\n\ntags\ndict\nDictionary mapping tag names to values\n\n\noptions\nVAR_KEYWORD\n\n\n\nReturns\nNone\nAdditional options for substitute_tags (strict, max_depth, warn_missing)\n\n\n\n\n# Create a temp file with tags\ntry:\n    with tempfile.NamedTemporaryFile(suffix='.txt', delete_on_close=False) as tmp_src:\n        tmp_src_path = Path(tmp_src.name)\n        tmp_src_path.write_text(\"Project: &lt;Project-Name&gt;\\nUser: &lt;User-Name&gt;\")\n\n        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as tmp_dst:\n            tmp_dst_path = Path(tmp_dst.name)\n            tags = {'Project-Name': 'TestProject', 'User-Name': 'TestUser'}\n            substitute_tags_in_file(tmp_src_path, tmp_dst_path, tags)\n            test_eq(tmp_dst_path.read_text(), \"Project: TestProject\\nUser: TestUser\")\nfinally:\n    if tmp_src_path.exists(): tmp_src_path.unlink()\n    if tmp_dst_path.exists(): tmp_dst_path.unlink()",
+    "crumbs": [
+      "tags"
+    ]
+  },
+  {
+    "objectID": "templates.html",
+    "href": "templates.html",
+    "title": "templates",
+    "section": "",
+    "text": "File Discovery\n\nsource\n\nget_template_files\n\n get_template_files (source_dir:str|pathlib.Path, extensions:list[str])\n\nFind all template files with specified extensions\n\n# Test get_template_files\ntemplates_dir = Path('../templates/Cursor')\nif templates_dir.exists():\n    files = get_template_files(templates_dir, ['.mdc'])\n    test_is(len(files) &gt; 0, True)\n    test_is(all(f.suffix == '.mdc' for f in files), True)\n\n\nsource\n\n\nshould_ignore\n\n should_ignore (path:pathlib.Path, ignore_patterns:list[str])\n\nCheck if path matches any ignore pattern\n\ntest_eq(should_ignore(Path('test.pyc'), ['*.pyc']), True)\ntest_eq(should_ignore(Path('test.txt'), ['*.pyc']), False)\ntest_eq(should_ignore(Path('normal.md'), []), False)\n\n\ntest_eq(should_ignore(Path('__pycache__/test.py'), ['__pycache__']), True)\n\n\n\n\nTemplate Processing\n\nsource\n\nprocess_template\n\n process_template (src:pathlib.Path, dst:pathlib.Path, tags:dict[str,str],\n                   no_substitution:list[str]|None=None, **options)\n\nProcess a single template file\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nsrc\nPath\n\nSource template file\n\n\ndst\nPath\n\nDestination file\n\n\ntags\ndict\n\nTag substitution dictionary\n\n\nno_substitution\nlist[str] | None\nNone\nList of file patterns to copy without substitution\n\n\noptions\nVAR_KEYWORD\n\n\n\n\nReturns\nPath\n\nPath to destination file\n\n\n\n\nsource\n\n\nprocess_vendor\n\n process_vendor (config:dict, vendor_name:str,\n                 root_path:pathlib.Path|None=None)\n\nProcess all templates for a specific vendor\n\nsource\n\n\nprocess_all\n\n process_all (config:dict, root_path:pathlib.Path|None=None)\n\nProcess all configured templates\n\n# Test process_vendor with real config\nconfig = load_config()\nconfig_path = find_config()\nbase_path = config_path.parent if config_path else Path.cwd()\n\n# Test meta (special case)\nif (base_path / 'templates/meta').exists():\n    files = process_vendor(config, 'meta', base_path)\n    test_is(isinstance(files, list), True)\n    # Check files were created in meta/\n    if files:\n        test_is(all(f.is_relative_to(base_path / 'meta') for f in files), True)\n\n# Test Cursor vendor\nif (base_path / 'templates/Cursor').exists():\n    cursor_dest = base_path / config['templates']['Cursor']['dest']\n    files = process_vendor(config, 'Cursor', base_path)\n    test_is(isinstance(files, list), True)\n    if files:\n        test_is(all(f.is_relative_to(cursor_dest) for f in files), True)\n\n\n# Test process_all\nresults = process_all(config, base_path)\ntest_is(isinstance(results, dict), True)\ntest_is('meta' in results or 'Cursor' in results, True)\n\n# Each vendor should return list of paths\nfor vendor, files in results.items():\n    test_is(isinstance(files, list), True)\n\n\n# Test error handling\ntest_fail(\n    lambda: process_vendor(config, 'NonExistentVendor', base_path),\n    contains='not found'\n)",
+    "crumbs": [
+      "templates"
+    ]
+  },
+  {
+    "objectID": "config.html",
+    "href": "config.html",
+    "title": "config",
+    "section": "",
+    "text": "Default config\n\n\nConfiguration Loading\n\nsource\n\nfind_config\n\n find_config (start_path:str|pathlib.Path='.')\n\nSearch up directory tree for .ctxt.yml config file\n\nconfig_path = find_config()\nassert config_path is not None  # silly Pylance doesn't understand fastcore test_eq, so use assert here to avoid type warning (Hate Wiggly Reds)\ntest_eq(config_path.name, CONFIG_FILENAME)\n\n\nsource\n\n\nload_config\n\n load_config (path:str|pathlib.Path='.')\n\nLoad and parse CONFIG_FILENAME config file, use defaults if not found\n\nconfig = load_config()\ntest_is(config is not None, True)\ntest_is('tags' in config, True)\n\nRenderJSON(config, init_level=2, max_height=400).display()\n\n\n\n    \n    \n\n\n\n\n\n\nConfiguration Validation\n\nsource\n\nvalidate_config\n\n validate_config (config:dict)\n\nValidate config structure, return (is_valid, errors)\n\nis_valid, errors = validate_config(config)\ntest_eq(is_valid, True)\ntest_eq(errors, [])\n\n\ninvalid_config = {'tags': 'not-a-dict', 'general': []}\nis_valid, errors = validate_config(invalid_config)\ntest_eq(is_valid, False)\ntest_eq(len(errors), 2)\n\n\n\n\nTag Retrieval\n\nsource\n\nget_tag\n\n get_tag (config:dict, tag_name:str, default:str|None=None)\n\nGet tag value from config, with optional default\n\nproject_name = get_tag(config, 'Project-Name')\ntest_eq(project_name, 'ctxt')\n\nmissing = get_tag(config, 'NonExistent', 'default_value')\ntest_eq(missing, 'default_value')\n\nuser_alias = get_tag(config, 'User-Alias')\ntest_eq(user_alias, 'vic')\n\n\nsource\n\n\nget_all_tags\n\n get_all_tags (config:dict)\n\nGet all tags from config as a flat dictionary\n\nall_tags = get_all_tags(config)\ntest_is(isinstance(all_tags, dict), True)\ntest_is('Project-Name' in all_tags, True)\ntest_is('User-Alias' in all_tags, True)\n\n\n# Test template config access\ntemplate_cfg = config['templates']\ntest_is(isinstance(template_cfg, dict), True)\n\nvendors = config['templates']\ntest_is(isinstance(vendors, dict), True)\n\nmeta_cfg = config['templates']['meta']\ntest_is(isinstance(meta_cfg, dict), True)\n\noptions = config['general']\ntest_is(isinstance(options, dict), True)\ntest_eq(options['max_recursion'], 10)  # default value",
+    "crumbs": [
+      "config"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ctxt",
+    "section": "",
+    "text": "ctxt is a simple tool for managing and generating LLM context files from templates. It helps you maintain IDE rules, prompt templates, and meta-programming documents with tag-based substitutions.\nKey Features:\n- 🏷️ Tag Substitution: Simple &lt;Tag-Name&gt; format with recursive support\n- 📁 Multi-Vendor Support: Generate rules for Cursor, Claude Coder, and more\n- ⚙️ Flexible Configuration: YAML-based configuration with sensible defaults\n- 🔍 Tag Discovery: Find all tags used in your templates\n- 🚀 CLI Interface: Easy-to-use command-line tools\nPerfect for managing project-specific LLM rules, documentation templates, and prompt libraries across different AI coding assistants.",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "ctxt",
+    "section": "Usage",
+    "text": "Usage\n\nInstallation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/civvic/ctxt.git\nor from conda\n$ conda install -c civvic ctxt\nor from pypi\n$ pip install ctxt\n\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on conda and pypi respectively.",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#quick-start",
+    "href": "index.html#quick-start",
+    "title": "ctxt",
+    "section": "Quick Start",
+    "text": "Quick Start\n\n1. Initialize a new project\nctxt-init\nThis creates a .ctxt.yml configuration file with examples.\n\n\n2. Create template files\nCreate a templates/ directory with your template files:\ntemplates/\n├── Cursor/\n│   ├── project.mdc\n│   └── about-me.mdc\n└── meta/\n    ├── HANDOFF.md\n    └── STARTING_PROMPT.md\n\n\n3. Add tags to your templates\nUse &lt;Tag-Name&gt; format in your templates:\n# Project: &lt;Project-Name&gt;\n\n**Objective:** &lt;Project-Objective&gt;\n\n**Developer:** &lt;User-Alias&gt;\n\n\n4. Configure tags in .ctxt.yml\ntags:\n  Project-Name: ctxt\n  Project-Objective: Manage LLM templates with tag substitution\n  User-Alias: vic\n\n\n5. Build your templates\nctxt  # Build all templates\nFiles will be generated in their configured destinations (e.g., .cursor/rules/, meta/).",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#cli-commands",
+    "href": "index.html#cli-commands",
+    "title": "ctxt",
+    "section": "CLI Commands",
+    "text": "CLI Commands\n\nBuild Templates\n# Build all templates\nctxt\n\n# Build specific vendor only\nctxt --vendor Cursor\n\n# Dry run (preview without creating files)\nctxt --dry_run\n\n\nDiscover Tags\n# Find all tags in configured templates\nctxt-tags\n\n# Find tags in specific file/directory\nctxt-tags --path templates/Cursor/project.mdc\n\n\nManage Configuration\n# Show current configuration\nctxt-config\n\n# Validate configuration\nctxt-config --validate\n\n\nInitialize Project\n# Create new .ctxt.yml config\nctxt-init\n\n# Overwrite existing config\nctxt-init --force",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#python-api",
+    "href": "index.html#python-api",
+    "title": "ctxt",
+    "section": "Python API",
+    "text": "Python API\nYou can also use ctxt programmatically:\n\nfrom ctxt.config import load_config\nfrom ctxt.tags import discover_tags, substitute_tags\nfrom ctxt.templates import process_all\n\n# Load configuration\nconfig = load_config()\n\n# Discover tags in text\ntext = \"Hello &lt;User-Name&gt;, welcome to &lt;Project-Name&gt;!\"\ntags_found = discover_tags(text)\nprint(f\"Found tags: {tags_found}\")\n\n# Substitute tags\ntags = {'User-Name': 'Vic', 'Project-Name': 'ctxt'}\nresult = substitute_tags(text, tags)\nprint(f\"Result: {result}\")\n\n2",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#configuration",
+    "href": "index.html#configuration",
+    "title": "ctxt",
+    "section": "Configuration",
+    "text": "Configuration\nThe .ctxt.yml file configures how templates are processed:\n\nBasic Structure\n# Tags - define your substitutions\ntags:\n  Project-Name: my-project\n  Project-Objective: Describe your project\n  User-Alias: developer\n  User-Profile: |\n    Add your developer profile here\n\n# Templates - define vendors and their destinations\ntemplates:\n  # Meta templates (special case - dest hardcoded to meta/)\n  meta: {}\n  \n  # Cursor AI IDE\n  # Source convention: templates/Cursor/\n  Cursor:\n    dest: \".cursor/rules/\"\n  \n  # Claude Coder extension\n  # Source convention: templates/Claude_Coder/\n  Claude_Coder:\n    dest: \".claude-coder/rules/\"\n\n# General configuration\ngeneral:\n  # Files to ignore during processing\n  ignore:\n    - \"*.pyc\"\n    - \"__pycache__\"\n  \n  # Options\n  warn_missing_tags: true\n  strict_mode: false\n  max_recursion: 10\n  preserve_timestamps: false\n\n\nConventions\n\nTemplate sources: By convention, templates are in templates/{vendor_name}/\nMeta destination: The meta vendor outputs to meta/ (hardcoded)\nOther destinations: Specify with dest key for each vendor\nDefault extensions: .md, .mdc, .txt, .yml, .yaml\n\n\n\nTag Features\n\nSimple tags: &lt;Project-Name&gt; → my-project\nNested tags: Tags can contain other tags, recursively substituted\nMulti-line tags: Use YAML’s | or &gt; for multi-line values\nMissing tags: Configurable behavior (warn or leave as-is)\n\n\n\nTemplate Processing\n\nTemplates discovered recursively in source directories\nFiles matching ignore patterns are skipped\nRelative paths preserved in destination\nDestination directories created automatically",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#use-cases",
+    "href": "index.html#use-cases",
+    "title": "ctxt",
+    "section": "Use Cases",
+    "text": "Use Cases\n\nIDE Rules Management\nMaintain a single source of truth for your IDE rules across projects:\ntemplates/Cursor/project.mdc → .cursor/rules/project.mdc\ntemplates/Cursor/about-me.mdc → .cursor/rules/about-me.mdc\n\n\nPrompt Libraries\nCreate reusable prompt templates:\ntemplates/meta/HANDOFF.md → meta/HANDOFF.md\ntemplates/meta/STARTING_PROMPT.md → meta/STARTING_PROMPT.md\n\n\nMulti-Project Documentation\nShare common documentation structure across projects with project-specific tags.",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#license",
+    "href": "index.html#license",
+    "title": "ctxt",
+    "section": "License",
+    "text": "License\nApache 2.0",
+    "crumbs": [
+      "ctxt"
+    ]
+  },
+  {
+    "objectID": "index.html#developer-guide",
+    "href": "index.html#developer-guide",
+    "title": "ctxt",
+    "section": "Developer Guide",
+    "text": "Developer Guide\nIf you are new to using nbdev here are some useful pointers to get you started.\n\nInstall ctxt in Development mode\n# make sure ctxt package is installed in development mode\n$ pip install -e .\n\n# make changes under nbs/ directory\n# ...\n\n# compile to have changes apply to ctxt\n$ nbdev_prepare",
+    "crumbs": [
+      "ctxt"
+    ]
+  }
+]

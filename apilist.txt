@@ -1,0 +1,79 @@
+# ctxt Module Documentation
+
+## ctxt.cli
+
+> Command-line interface for ctxt
+
+- `@call_parse def init(force)`
+    Initialize ctxt config from default template
+
+- `@call_parse def config_cmd(validate)`
+    Show and optionally validate configuration
+
+- `@call_parse def tags(path)`
+    Discover tags in templates
+
+- `@call_parse def build(vendor, dry_run)`
+    Build templates from source
+
+- `@call_parse def chelp()`
+    Show help for all console scripts
+
+## ctxt.config
+
+> Configuration loading and validation for ctxt
+
+- `def find_config(start_path)`
+    Search up directory tree for .ctxt.yml config file
+
+- `def load_config(path)`
+    Load and parse `CONFIG_FILENAME` config file, use defaults if not found
+
+- `def validate_config(config)`
+    Validate config structure, return (is_valid, errors)
+
+- `def get_tag(config, tag_name, default)`
+    Get tag value from config, with optional default
+
+- `def get_all_tags(config)`
+    Get all tags from config as a flat dictionary
+
+## ctxt.tags
+
+> Tag discovery and substitution for template processing
+
+- `def discover_tags(text)`
+    Find all <Tag> patterns in text
+
+- `def discover_tags_in_file(path)`
+    Find all tags in a file, return empty set on error
+
+- `def discover_tags_in_templates(template_dir, extensions)`
+    Discover all tags in template files
+    Returns dict mapping file paths to sets of tags found in each file
+
+- `def substitute_tags(text, tags, max_depth, warn_missing)`
+    Recursively substitute tags in text
+
+- `def substitute_tags_in_file(src, dst, tags, **options)`
+    Process file with tag substitution and write to destination
+
+## ctxt.templates
+
+> Template file discovery and processing
+
+- `def get_template_files(source_dir, extensions)`
+    Find all template files with specified extensions
+
+- `def should_ignore(path, ignore_patterns)`
+    Check if path matches any ignore pattern
+
+- `def process_template(src, dst, tags, no_substitution, **options)`
+    Process a single template file
+
+- `def process_vendor(config, vendor_name, root_path)`
+    Process all templates for a specific vendor
+
+- `def process_all(config, root_path)`
+    Process all configured templates
+

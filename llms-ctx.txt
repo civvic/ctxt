@@ -1,0 +1,376 @@
+<project title="ctxt" summary="Simple tool for managing and generating LLM context files from templates. It helps you maintain IDE rules, prompt templates, and meta-programming documents with tag-based substitutions.  ">- 🏷️ **Tag Substitution**: Simple `<Tag-Name>` format with recursive support  
+- 📁 **Multi-Vendor Support**: Generate rules for Cursor, Claude Coder, and more  
+- ⚙️ **Flexible Configuration**: YAML-based configuration with sensible defaults  
+- 🔍 **Tag Discovery**: Find all tags used in your templates  
+- 🚀 **CLI Interface**: Easy-to-use command-line tools  
+
+Perfect for managing project-specific LLM rules, documentation templates, and prompt libraries across different AI coding assistants.<docs><doc title="README" desc="Quick start guide and overview"># ctxt
+
+
+
+[ctxt](https://civvic.github.io/ctxt/) is a simple tool for managing and
+generating LLM context files from templates. It helps you maintain IDE
+rules, prompt templates, and meta-programming documents with tag-based
+substitutions.
+
+**Key Features:**  
+- 🏷️ **Tag Substitution**: Simple `<Tag-Name>` format with recursive
+support  
+- 📁 **Multi-Vendor Support**: Generate rules for Cursor, Claude Coder,
+and more  
+- ⚙️ **Flexible Configuration**: YAML-based configuration with sensible
+defaults  
+- 🔍 **Tag Discovery**: Find all tags used in your templates  
+- 🚀 **CLI Interface**: Easy-to-use command-line tools
+
+Perfect for managing project-specific LLM rules, documentation
+templates, and prompt libraries across different AI coding assistants.
+
+## Usage
+
+### Installation
+
+Install latest from the GitHub
+[repository](https://github.com/civvic/ctxt):
+
+``` sh
+$ pip install git+https://github.com/civvic/ctxt.git
+```
+
+or from [conda](https://anaconda.org/civvic/ctxt)
+
+``` sh
+$ conda install -c civvic ctxt
+```
+
+or from [pypi](https://pypi.org/project/ctxt/)
+
+``` sh
+$ pip install ctxt
+```
+
+### Documentation
+
+Documentation can be found hosted on this GitHub
+[repository](https://github.com/civvic/ctxt)’s
+[pages](https://civvic.github.io/ctxt/). Additionally you can find
+package manager specific guidelines on
+[conda](https://anaconda.org/civvic/ctxt) and
+[pypi](https://pypi.org/project/ctxt/) respectively.
+
+## Quick Start
+
+### 1. Initialize a new project
+
+``` bash
+ctxt-init
+```
+
+This creates a `.ctxt.yml` configuration file with examples.
+
+### 2. Create template files
+
+Create a `templates/` directory with your template files:
+
+    templates/
+    ├── Cursor/
+    │   ├── project.mdc
+    │   └── about-me.mdc
+    └── meta/
+        ├── HANDOFF.md
+        └── STARTING_PROMPT.md
+
+### 3. Add tags to your templates
+
+Use `<Tag-Name>` format in your templates:
+
+``` markdown
+# Project: <Project-Name>
+
+**Objective:** <Project-Objective>
+
+**Developer:** <User-Alias>
+```
+
+### 4. Configure tags in `.ctxt.yml`
+
+``` yaml
+tags:
+  Project-Name: ctxt
+  Project-Objective: Manage LLM templates with tag substitution
+  User-Alias: vic
+```
+
+### 5. Build your templates
+
+``` bash
+ctxt  # Build all templates
+```
+
+Files will be generated in their configured destinations (e.g.,
+`.cursor/rules/`, `meta/`).
+
+## CLI Commands
+
+### Build Templates
+
+``` bash
+# Build all templates
+ctxt
+
+# Build specific vendor only
+ctxt --vendor Cursor
+
+# Dry run (preview without creating files)
+ctxt --dry_run
+```
+
+### Discover Tags
+
+``` bash
+# Find all tags in configured templates
+ctxt-tags
+
+# Find tags in specific file/directory
+ctxt-tags --path templates/Cursor/project.mdc
+```
+
+### Manage Configuration
+
+``` bash
+# Show current configuration
+ctxt-config
+
+# Validate configuration
+ctxt-config --validate
+```
+
+### Initialize Project
+
+``` bash
+# Create new .ctxt.yml config
+ctxt-init
+
+# Overwrite existing config
+ctxt-init --force
+```
+
+## Python API
+
+You can also use ctxt programmatically:
+
+``` python
+from ctxt.config import load_config
+from ctxt.tags import discover_tags, substitute_tags
+from ctxt.templates import process_all
+
+# Load configuration
+config = load_config()
+
+# Discover tags in text
+text = "Hello <User-Name>, welcome to <Project-Name>!"
+tags_found = discover_tags(text)
+print(f"Found tags: {tags_found}")
+
+# Substitute tags
+tags = {'User-Name': 'Vic', 'Project-Name': 'ctxt'}
+result = substitute_tags(text, tags)
+print(f"Result: {result}")
+```
+
+    2
+
+## Configuration
+
+The `.ctxt.yml` file configures how templates are processed:
+
+### Basic Structure
+
+``` yaml
+# Tags - define your substitutions
+tags:
+  Project-Name: my-project
+  Project-Objective: Describe your project
+  User-Alias: developer
+  User-Profile: |
+    Add your developer profile here
+
+# Templates - define vendors and their destinations
+templates:
+  # Meta templates (special case - dest hardcoded to meta/)
+  meta: {}
+  
+  # Cursor AI IDE
+  # Source convention: templates/Cursor/
+  Cursor:
+    dest: ".cursor/rules/"
+  
+  # Claude Coder extension
+  # Source convention: templates/Claude_Coder/
+  Claude_Coder:
+    dest: ".claude-coder/rules/"
+
+# General configuration
+general:
+  # Files to ignore during processing
+  ignore:
+    - "*.pyc"
+    - "__pycache__"
+  
+  # Options
+  warn_missing_tags: true
+  strict_mode: false
+  max_recursion: 10
+  preserve_timestamps: false
+```
+
+### Conventions
+
+- **Template sources**: By convention, templates are in
+  `templates/{vendor_name}/`
+- **Meta destination**: The `meta` vendor outputs to `meta/` (hardcoded)
+- **Other destinations**: Specify with `dest` key for each vendor
+- **Default extensions**: `.md`, `.mdc`, `.txt`, `.yml`, `.yaml`
+
+### Tag Features
+
+- **Simple tags**: `<Project-Name>` → `my-project`
+- **Nested tags**: Tags can contain other tags, recursively substituted
+- **Multi-line tags**: Use YAML’s `|` or `>` for multi-line values
+- **Missing tags**: Configurable behavior (warn or leave as-is)
+
+### Template Processing
+
+- Templates discovered recursively in source directories
+- Files matching ignore patterns are skipped
+- Relative paths preserved in destination
+- Destination directories created automatically
+
+## Use Cases
+
+### IDE Rules Management
+
+Maintain a single source of truth for your IDE rules across projects:
+
+    templates/Cursor/project.mdc → .cursor/rules/project.mdc
+    templates/Cursor/about-me.mdc → .cursor/rules/about-me.mdc
+
+### Prompt Libraries
+
+Create reusable prompt templates:
+
+    templates/meta/HANDOFF.md → meta/HANDOFF.md
+    templates/meta/STARTING_PROMPT.md → meta/STARTING_PROMPT.md
+
+### Multi-Project Documentation
+
+Share common documentation structure across projects with
+project-specific tags.
+
+## License
+
+Apache 2.0
+
+## Developer Guide
+
+If you are new to using `nbdev` here are some useful pointers to get you
+started.
+
+### Install ctxt in Development mode
+
+``` sh
+# make sure ctxt package is installed in development mode
+$ pip install -e .
+
+# make changes under nbs/ directory
+# ...
+
+# compile to have changes apply to ctxt
+$ nbdev_prepare
+```</doc></docs><api><doc title="API List" desc="A succint list of all functions and methods in ctxt."><!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'">
+    <title>Page not found &middot; GitHub Pages</title>
+    <style type="text/css" media="screen">
+      body {
+        background-color: #f1f1f1;
+        margin: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      .container { margin: 50px auto 40px auto; width: 600px; text-align: center; }
+
+      a { color: #4183c4; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      h1 { width: 800px; position:relative; left: -100px; letter-spacing: -1px; line-height: 60px; font-size: 60px; font-weight: 100; margin: 0px 0 50px 0; text-shadow: 0 1px 0 #fff; }
+      p { color: rgba(0, 0, 0, 0.5); margin: 20px 0; line-height: 1.6; }
+
+      ul { list-style: none; margin: 25px 0; padding: 0; }
+      li { display: table-cell; font-weight: bold; width: 1%; }
+
+      .logo { display: inline-block; margin-top: 35px; }
+      .logo-img-2x { display: none; }
+      @media
+      only screen and (-webkit-min-device-pixel-ratio: 2),
+      only screen and (   min--moz-device-pixel-ratio: 2),
+      only screen and (     -o-min-device-pixel-ratio: 2/1),
+      only screen and (        min-device-pixel-ratio: 2),
+      only screen and (                min-resolution: 192dpi),
+      only screen and (                min-resolution: 2dppx) {
+        .logo-img-1x { display: none; }
+        .logo-img-2x { display: inline-block; }
+      }
+
+      #suggestions {
+        margin-top: 35px;
+        color: #ccc;
+      }
+      #suggestions a {
+        color: #666666;
+        font-weight: 200;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <h1>404</h1>
+      <p><strong>File not found</strong></p>
+
+      <p>
+        The site configured at this address does not
+        contain the requested file.
+      </p>
+
+      <p>
+        If this is your site, make sure that the filename case matches the URL
+        as well as any file permissions.<br>
+        For root URLs (like <code>http://example.com/</code>) you must provide an
+        <code>index.html</code> file.
+      </p>
+
+      <p>
+        <a href="https://help.github.com/pages/">Read the full documentation</a>
+        for more information about using <strong>GitHub Pages</strong>.
+      </p>
+
+      <div id="suggestions">
+        <a href="https://githubstatus.com">GitHub Status</a> &mdash;
+        <a href="https://twitter.com/githubstatus">@githubstatus</a>
+      </div>
+
+      <a href="/" class="logo logo-img-1x">
+      </a>
+
+      <a href="/" class="logo logo-img-2x">
+      </a>
+    </div>
+  </body>
+</html></doc></api></project>
