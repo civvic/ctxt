@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "ctxt"
+  site-url: "https://civvic.github.io/ctxt"
+  description: "Mind of Text, own the context"
+  repo-branch: main
+  repo-url: "https://github.com/civvic/ctxt"
