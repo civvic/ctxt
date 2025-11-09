@@ -1,0 +1,1254 @@
+<project title="ctxt" summary="Simple tool for managing and generating LLM context files from templates. It helps you maintain IDE rules, prompt templates, and meta-programming documents with tag-based substitutions.  ">- 🏷️ **Tag Substitution**: Simple `<Tag-Name>` format with recursive support  
+- 📁 **Multi-Vendor Support**: Generate rules for Cursor, Claude Coder, and more  
+- ⚙️ **Flexible Configuration**: YAML-based configuration with sensible defaults  
+- 🔍 **Tag Discovery**: Find all tags used in your templates  
+- 🚀 **CLI Interface**: Easy-to-use command-line tools  
+
+Perfect for managing project-specific LLM rules, documentation templates, and prompt libraries across different AI coding assistants.<docs><doc title="README" desc="Quick start guide and overview"># ctxt
+
+
+
+[ctxt](https://civvic.github.io/ctxt/) is a simple tool for managing and
+generating LLM context files from templates. It helps you maintain IDE
+rules, prompt templates, and meta-programming documents with tag-based
+substitutions.
+
+**Key Features:**  
+- 🏷️ **Tag Substitution**: Simple `<Tag-Name>` format with recursive
+support  
+- 📁 **Multi-Vendor Support**: Generate rules for Cursor, Claude Coder,
+and more  
+- ⚙️ **Flexible Configuration**: YAML-based configuration with sensible
+defaults  
+- 🔍 **Tag Discovery**: Find all tags used in your templates  
+- 🚀 **CLI Interface**: Easy-to-use command-line tools
+
+Perfect for managing project-specific LLM rules, documentation
+templates, and prompt libraries across different AI coding assistants.
+
+## Usage
+
+### Installation
+
+Install latest from the GitHub
+[repository](https://github.com/civvic/ctxt):
+
+``` sh
+$ pip install git+https://github.com/civvic/ctxt.git
+```
+
+or from [conda](https://anaconda.org/civvic/ctxt)
+
+``` sh
+$ conda install -c civvic ctxt
+```
+
+or from [pypi](https://pypi.org/project/ctxt/)
+
+``` sh
+$ pip install ctxt
+```
+
+### Documentation
+
+Documentation can be found hosted on this GitHub
+[repository](https://github.com/civvic/ctxt)’s
+[pages](https://civvic.github.io/ctxt/). Additionally you can find
+package manager specific guidelines on
+[conda](https://anaconda.org/civvic/ctxt) and
+[pypi](https://pypi.org/project/ctxt/) respectively.
+
+## Quick Start
+
+### 1. Initialize a new project
+
+``` bash
+ctxt-init
+```
+
+This creates a `.ctxt.yml` configuration file with examples.
+
+### 2. Create template files
+
+Create a `templates/` directory with your template files:
+
+    templates/
+    ├── Cursor/
+    │   ├── project.mdc
+    │   └── about-me.mdc
+    └── meta/
+        ├── HANDOFF.md
+        └── STARTING_PROMPT.md
+
+### 3. Add tags to your templates
+
+Use `<Tag-Name>` format in your templates:
+
+``` markdown
+# Project: <Project-Name>
+
+**Objective:** <Project-Objective>
+
+**Developer:** <User-Alias>
+```
+
+### 4. Configure tags in `.ctxt.yml`
+
+``` yaml
+tags:
+  Project-Name: ctxt
+  Project-Objective: Manage LLM templates with tag substitution
+  User-Alias: vic
+```
+
+### 5. Build your templates
+
+``` bash
+ctxt  # Build all templates
+```
+
+Files will be generated in their configured destinations (e.g.,
+`.cursor/rules/`, `meta/`).
+
+## CLI Commands
+
+### Build Templates
+
+``` bash
+# Build all templates
+ctxt
+
+# Build specific vendor only
+ctxt --vendor Cursor
+
+# Dry run (preview without creating files)
+ctxt --dry_run
+```
+
+### Discover Tags
+
+``` bash
+# Find all tags in configured templates
+ctxt-tags
+
+# Find tags in specific file/directory
+ctxt-tags --path templates/Cursor/project.mdc
+```
+
+### Manage Configuration
+
+``` bash
+# Show current configuration
+ctxt-config
+
+# Validate configuration
+ctxt-config --validate
+```
+
+### Initialize Project
+
+``` bash
+# Create new .ctxt.yml config
+ctxt-init
+
+# Overwrite existing config
+ctxt-init --force
+```
+
+## Python API
+
+You can also use ctxt programmatically:
+
+``` python
+from ctxt.config import load_config
+from ctxt.tags import discover_tags, substitute_tags
+from ctxt.templates import process_all
+
+# Load configuration
+config = load_config()
+
+# Discover tags in text
+text = "Hello <User-Name>, welcome to <Project-Name>!"
+tags_found = discover_tags(text)
+print(f"Found tags: {tags_found}")
+
+# Substitute tags
+tags = {'User-Name': 'Vic', 'Project-Name': 'ctxt'}
+result = substitute_tags(text, tags)
+print(f"Result: {result}")
+```
+
+    2
+
+## Configuration
+
+The `.ctxt.yml` file configures how templates are processed:
+
+### Basic Structure
+
+``` yaml
+# Tags - define your substitutions
+tags:
+  Project-Name: my-project
+  Project-Objective: Describe your project
+  User-Alias: developer
+  User-Profile: |
+    Add your developer profile here
+
+# Templates - define vendors and their destinations
+templates:
+  # Meta templates (special case - dest hardcoded to meta/)
+  meta: {}
+  
+  # Cursor AI IDE
+  # Source convention: templates/Cursor/
+  Cursor:
+    dest: ".cursor/rules/"
+  
+  # Claude Coder extension
+  # Source convention: templates/Claude_Coder/
+  Claude_Coder:
+    dest: ".claude-coder/rules/"
+
+# General configuration
+general:
+  # Files to ignore during processing
+  ignore:
+    - "*.pyc"
+    - "__pycache__"
+  
+  # Options
+  warn_missing_tags: true
+  strict_mode: false
+  max_recursion: 10
+  preserve_timestamps: false
+```
+
+### Conventions
+
+- **Template sources**: By convention, templates are in
+  `templates/{vendor_name}/`
+- **Meta destination**: The `meta` vendor outputs to `meta/` (hardcoded)
+- **Other destinations**: Specify with `dest` key for each vendor
+- **Default extensions**: `.md`, `.mdc`, `.txt`, `.yml`, `.yaml`
+
+### Tag Features
+
+- **Simple tags**: `<Project-Name>` → `my-project`
+- **Nested tags**: Tags can contain other tags, recursively substituted
+- **Multi-line tags**: Use YAML’s `|` or `>` for multi-line values
+- **Missing tags**: Configurable behavior (warn or leave as-is)
+
+### Template Processing
+
+- Templates discovered recursively in source directories
+- Files matching ignore patterns are skipped
+- Relative paths preserved in destination
+- Destination directories created automatically
+
+## Use Cases
+
+### IDE Rules Management
+
+Maintain a single source of truth for your IDE rules across projects:
+
+    templates/Cursor/project.mdc → .cursor/rules/project.mdc
+    templates/Cursor/about-me.mdc → .cursor/rules/about-me.mdc
+
+### Prompt Libraries
+
+Create reusable prompt templates:
+
+    templates/meta/HANDOFF.md → meta/HANDOFF.md
+    templates/meta/STARTING_PROMPT.md → meta/STARTING_PROMPT.md
+
+### Multi-Project Documentation
+
+Share common documentation structure across projects with
+project-specific tags.
+
+## License
+
+Apache 2.0
+
+## Developer Guide
+
+If you are new to using `nbdev` here are some useful pointers to get you
+started.
+
+### Install ctxt in Development mode
+
+``` sh
+# make sure ctxt package is installed in development mode
+$ pip install -e .
+
+# make changes under nbs/ directory
+# ...
+
+# compile to have changes apply to ctxt
+$ nbdev_prepare
+```</doc></docs><api><doc title="API List" desc="A succint list of all functions and methods in ctxt."><!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'">
+    <title>Page not found &middot; GitHub Pages</title>
+    <style type="text/css" media="screen">
+      body {
+        background-color: #f1f1f1;
+        margin: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      .container { margin: 50px auto 40px auto; width: 600px; text-align: center; }
+
+      a { color: #4183c4; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      h1 { width: 800px; position:relative; left: -100px; letter-spacing: -1px; line-height: 60px; font-size: 60px; font-weight: 100; margin: 0px 0 50px 0; text-shadow: 0 1px 0 #fff; }
+      p { color: rgba(0, 0, 0, 0.5); margin: 20px 0; line-height: 1.6; }
+
+      ul { list-style: none; margin: 25px 0; padding: 0; }
+      li { display: table-cell; font-weight: bold; width: 1%; }
+
+      .logo { display: inline-block; margin-top: 35px; }
+      .logo-img-2x { display: none; }
+      @media
+      only screen and (-webkit-min-device-pixel-ratio: 2),
+      only screen and (   min--moz-device-pixel-ratio: 2),
+      only screen and (     -o-min-device-pixel-ratio: 2/1),
+      only screen and (        min-device-pixel-ratio: 2),
+      only screen and (                min-resolution: 192dpi),
+      only screen and (                min-resolution: 2dppx) {
+        .logo-img-1x { display: none; }
+        .logo-img-2x { display: inline-block; }
+      }
+
+      #suggestions {
+        margin-top: 35px;
+        color: #ccc;
+      }
+      #suggestions a {
+        color: #666666;
+        font-weight: 200;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <h1>404</h1>
+      <p><strong>File not found</strong></p>
+
+      <p>
+        The site configured at this address does not
+        contain the requested file.
+      </p>
+
+      <p>
+        If this is your site, make sure that the filename case matches the URL
+        as well as any file permissions.<br>
+        For root URLs (like <code>http://example.com/</code>) you must provide an
+        <code>index.html</code> file.
+      </p>
+
+      <p>
+        <a href="https://help.github.com/pages/">Read the full documentation</a>
+        for more information about using <strong>GitHub Pages</strong>.
+      </p>
+
+      <div id="suggestions">
+        <a href="https://githubstatus.com">GitHub Status</a> &mdash;
+        <a href="https://twitter.com/githubstatus">@githubstatus</a>
+      </div>
+
+      <a href="/" class="logo logo-img-1x">
+      </a>
+
+      <a href="/" class="logo logo-img-2x">
+      </a>
+    </div>
+  </body>
+</html></doc></api><optional><doc title="Config" desc="Configuration loading and validation for ctxt"># config
+
+
+
+
+# Default config
+
+# Configuration Loading
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/config.py#L59"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### find_config
+
+>  find_config (start_path:str|pathlib.Path='.')
+
+*Search up directory tree for .ctxt.yml config file*
+
+``` python
+config_path = find_config()
+assert config_path is not None  # silly Pylance doesn't understand fastcore test_eq, so use assert here to avoid type warning (Hate Wiggly Reds)
+test_eq(config_path.name, CONFIG_FILENAME)
+```
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/config.py#L68"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### load_config
+
+>  load_config (path:str|pathlib.Path='.')
+
+*Load and parse `CONFIG_FILENAME` config file, use defaults if not
+found*
+
+``` python
+config = load_config()
+test_is(config is not None, True)
+test_is('tags' in config, True)
+
+RenderJSON(config, init_level=2, max_height=400).display()
+```
+
+<div id="wrapper-3d5bf986-8487-4ad3-aa24-f64a610ef3df" style="width: 100%; max-height: 400px; overflow-y: auto;">
+    <div id="3d5bf986-8487-4ad3-aa24-f64a610ef3df" style="width: 100%;"></div>
+    <script>
+        function renderMyJson() {
+            renderjson.set_show_to_level(2);
+            document.getElementById('3d5bf986-8487-4ad3-aa24-f64a610ef3df').appendChild(renderjson({"templates": {"meta": {}, "Cursor": {"dest": ".cursor/rules/"}, "Claude_Coder": {"dest": ".claude-coder/rules/"}}, "tags": {"Project-Name": "ctxt", "Project-Objective": "Provide a set of helpers to convert templates to prompts for language models.", "Project-Current-Phase": "Initial setup.", "User-Alias": "vic", "User-Profile": "- Seasoned programmer with extensive experience |\n- Primary languages: Python, JavaScript |\n- Development environment: Mac and Linux |\n- IDEs: VSCode/Cursor notebooks |\n- Follows literate programming principles |\n- Uses @nbdev library for notebook-based development |\n", "User-Language-Note": "I am a Spanish speaker attempting to communicate in English. Though your **first priority** should be what's in @project.mdc, when indicated, please help me learn and improve my English communication skills, and refine my writings when appropiate by following the guidelines in @english-assistan.mdc.", "Language-Name": "Spanish"}, "general": {"ignore": [], "warn_missing_tags": true, "strict_mode": false, "max_recursion": 10, "preserve_timestamps": false}}));
+        };
+        function loadRenderjson() {
+            if (window.renderjson) return Promise.resolve();
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/renderjson@latest/renderjson.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        };
+        loadRenderjson().then(renderMyJson).catch(err => console.error('Failed to load renderjson:', err));
+    </script>
+</div>
+
+# Configuration Validation
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/config.py#L83"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### validate_config
+
+>  validate_config (config:dict)
+
+*Validate config structure, return (is_valid, errors)*
+
+``` python
+is_valid, errors = validate_config(config)
+test_eq(is_valid, True)
+test_eq(errors, [])
+```
+
+``` python
+invalid_config = {'tags': 'not-a-dict', 'general': []}
+is_valid, errors = validate_config(invalid_config)
+test_eq(is_valid, False)
+test_eq(len(errors), 2)
+```
+
+# Tag Retrieval
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/config.py#L95"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### get_tag
+
+>  get_tag (config:dict, tag_name:str, default:str|None=None)
+
+*Get tag value from config, with optional default*
+
+``` python
+project_name = get_tag(config, 'Project-Name')
+test_eq(project_name, 'ctxt')
+
+missing = get_tag(config, 'NonExistent', 'default_value')
+test_eq(missing, 'default_value')
+
+user_alias = get_tag(config, 'User-Alias')
+test_eq(user_alias, 'vic')
+```
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/config.py#L100"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### get_all_tags
+
+>  get_all_tags (config:dict)
+
+*Get all tags from config as a flat dictionary*
+
+``` python
+all_tags = get_all_tags(config)
+test_is(isinstance(all_tags, dict), True)
+test_is('Project-Name' in all_tags, True)
+test_is('User-Alias' in all_tags, True)
+```
+
+``` python
+# Test template config access
+template_cfg = config['templates']
+test_is(isinstance(template_cfg, dict), True)
+
+vendors = config['templates']
+test_is(isinstance(vendors, dict), True)
+
+meta_cfg = config['templates']['meta']
+test_is(isinstance(meta_cfg, dict), True)
+
+options = config['general']
+test_is(isinstance(options, dict), True)
+test_eq(options['max_recursion'], 10)  # default value
+```
+
+------------------------------------------------------------------------
+</doc><doc title="Tags" desc="Tag discovery and substitution for template processing"># tags
+
+
+
+
+# Tag Discovery
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/tags.py#L23"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### discover_tags
+
+>  discover_tags (text:str)
+
+*Find all <Tag> patterns in text*
+
+``` python
+text = "Hello <User-Name>, welcome to <Project-Name>!"
+tags = discover_tags(text)
+test_eq(tags, {'User-Name', 'Project-Name'})
+
+test_eq(discover_tags("No tags here"), set())
+
+text_dup = "<Tag1> and <Tag2> and <Tag1> again"
+test_eq(discover_tags(text_dup), {'Tag1', 'Tag2'})
+```
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/tags.py#L28"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### discover_tags_in_file
+
+>  discover_tags_in_file (path:str|pathlib.Path)
+
+*Find all tags in a file, return empty set on error*
+
+``` python
+template_file = Path('../templates/Cursor/project.mdc')
+if template_file.exists():
+    tags_in_file = discover_tags_in_file(template_file)
+    test_is('Project-Name' in tags_in_file, True)
+    test_is('Project-Objective' in tags_in_file, True)
+```
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/tags.py#L37"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### discover_tags_in_templates
+
+>  discover_tags_in_templates (template_dir:str|pathlib.Path,
+>                                  extensions:list[str]|None=None)
+
+*Discover all tags in template files Returns dict mapping file paths to
+sets of tags found in each file*
+
+``` python
+# Test discover_tags_in_templates
+templates_dir = Path('../templates')
+if templates_dir.exists():
+    all_tags = discover_tags_in_templates(templates_dir)
+    test_is(len(all_tags) > 0, True)  # Should find some files with tags
+    test_is(isinstance(all_tags, dict), True)
+```
+
+# Tag Substitution
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/tags.py#L58"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### substitute_tags
+
+>  substitute_tags (text:str, tags:dict[str,str], max_depth:int=10,
+>                       warn_missing:bool=False)
+
+*Recursively substitute tags in text*
+
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 25%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td>str</td>
+<td></td>
+<td>Text containing tags to substitute</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>dict</td>
+<td></td>
+<td>Dictionary mapping tag names to values</td>
+</tr>
+<tr>
+<td>max_depth</td>
+<td>int</td>
+<td>10</td>
+<td>Maximum recursion depth for nested tags</td>
+</tr>
+<tr>
+<td>warn_missing</td>
+<td>bool</td>
+<td>False</td>
+<td>If True, print warnings for missing tags</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><strong>str</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+``` python
+text = "Hello <User-Name>, welcome to <Project-Name>!"
+tags = {'User-Name': 'Vic', 'Project-Name': 'ctxt'}
+result = substitute_tags(text, tags)
+test_eq(result, "Hello Vic, welcome to ctxt!")
+
+tags_nested = {
+    'Name': 'Vic',
+    'Greeting': 'Hello <Name>',
+    'Message': '<Greeting>, welcome!'
+}
+result = substitute_tags('<Message>', tags_nested)
+test_eq(result, 'Hello Vic, welcome!')
+
+text = "Hello <Missing-Tag>"
+result = substitute_tags(text, {})
+test_eq(result, "Hello <Missing-Tag>")  # Should leave as-is
+```
+
+``` python
+# Test recursion limit protection
+circular_tags = {
+    'A': 'Value with <B>',
+    'B': 'Value with <A>'
+}
+test_eq(substitute_tags('<A>', circular_tags, max_depth=5), 'Value with Value with Value with Value with Value with <B>')
+```
+
+    Warning: Max recursion depth (5) reached. Unresolved tags: {'B'}
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/tags.py#L93"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### substitute_tags_in_file
+
+>  substitute_tags_in_file (src:str|pathlib.Path, dst:str|pathlib.Path,
+>                               tags:dict[str,str], **options)
+
+*Process file with tag substitution and write to destination*
+
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 38%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>str | pathlib.Path</td>
+<td>Source file path</td>
+</tr>
+<tr>
+<td>dst</td>
+<td>str | pathlib.Path</td>
+<td>Destination file path</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>dict</td>
+<td>Dictionary mapping tag names to values</td>
+</tr>
+<tr>
+<td>options</td>
+<td>VAR_KEYWORD</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td><strong>Additional options for substitute_tags (strict, max_depth,
+warn_missing)</strong></td>
+</tr>
+</tbody>
+</table>
+
+``` python
+# Create a temp file with tags
+try:
+    with tempfile.NamedTemporaryFile(suffix='.txt', delete_on_close=False) as tmp_src:
+        tmp_src_path = Path(tmp_src.name)
+        tmp_src_path.write_text("Project: <Project-Name>\nUser: <User-Name>")
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as tmp_dst:
+            tmp_dst_path = Path(tmp_dst.name)
+            tags = {'Project-Name': 'TestProject', 'User-Name': 'TestUser'}
+            substitute_tags_in_file(tmp_src_path, tmp_dst_path, tags)
+            test_eq(tmp_dst_path.read_text(), "Project: TestProject\nUser: TestUser")
+finally:
+    if tmp_src_path.exists(): tmp_src_path.unlink()
+    if tmp_dst_path.exists(): tmp_dst_path.unlink()
+```
+
+------------------------------------------------------------------------
+</doc><doc title="Templates" desc="Template file discovery and processing"># templates
+
+
+
+
+# File Discovery
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/templates.py#L25"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### get_template_files
+
+>  get_template_files (source_dir:str|pathlib.Path, extensions:list[str])
+
+*Find all template files with specified extensions*
+
+``` python
+# Test get_template_files
+templates_dir = Path('../templates/Cursor')
+if templates_dir.exists():
+    files = get_template_files(templates_dir, ['.mdc'])
+    test_is(len(files) > 0, True)
+    test_is(all(f.suffix == '.mdc' for f in files), True)
+```
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/templates.py#L37"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### should_ignore
+
+>  should_ignore (path:pathlib.Path, ignore_patterns:list[str])
+
+*Check if path matches any ignore pattern*
+
+``` python
+test_eq(should_ignore(Path('test.pyc'), ['*.pyc']), True)
+test_eq(should_ignore(Path('test.txt'), ['*.pyc']), False)
+test_eq(should_ignore(Path('normal.md'), []), False)
+```
+
+``` python
+test_eq(should_ignore(Path('__pycache__/test.py'), ['__pycache__']), True)
+```
+
+# Template Processing
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/templates.py#L54"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### process_template
+
+>  process_template (src:pathlib.Path, dst:pathlib.Path, tags:dict[str,str],
+>                        no_substitution:list[str]|None=None, **options)
+
+*Process a single template file*
+
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 25%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>Path</td>
+<td></td>
+<td>Source template file</td>
+</tr>
+<tr>
+<td>dst</td>
+<td>Path</td>
+<td></td>
+<td>Destination file</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>dict</td>
+<td></td>
+<td>Tag substitution dictionary</td>
+</tr>
+<tr>
+<td>no_substitution</td>
+<td>list[str] | None</td>
+<td>None</td>
+<td>List of file patterns to copy without substitution</td>
+</tr>
+<tr>
+<td>options</td>
+<td>VAR_KEYWORD</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><strong>Path</strong></td>
+<td></td>
+<td><strong>Path to destination file</strong></td>
+</tr>
+</tbody>
+</table>
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/templates.py#L73"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### process_vendor
+
+>  process_vendor (config:dict, vendor_name:str,
+>                      root_path:pathlib.Path|None=None)
+
+*Process all templates for a specific vendor*
+
+------------------------------------------------------------------------
+
+<a
+href="https://github.com/civvic/ctxt/blob/main/ctxt/templates.py#L120"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### process_all
+
+>  process_all (config:dict, root_path:pathlib.Path|None=None)
+
+*Process all configured templates*
+
+``` python
+# Test process_vendor with real config
+config = load_config()
+config_path = find_config()
+base_path = config_path.parent if config_path else Path.cwd()
+
+# Test meta (special case)
+if (base_path / 'templates/meta').exists():
+    files = process_vendor(config, 'meta', base_path)
+    test_is(isinstance(files, list), True)
+    # Check files were created in meta/
+    if files:
+        test_is(all(f.is_relative_to(base_path / 'meta') for f in files), True)
+
+# Test Cursor vendor
+if (base_path / 'templates/Cursor').exists():
+    cursor_dest = base_path / config['templates']['Cursor']['dest']
+    files = process_vendor(config, 'Cursor', base_path)
+    test_is(isinstance(files, list), True)
+    if files:
+        test_is(all(f.is_relative_to(cursor_dest) for f in files), True)
+```
+
+``` python
+# Test process_all
+results = process_all(config, base_path)
+test_is(isinstance(results, dict), True)
+test_is('meta' in results or 'Cursor' in results, True)
+
+# Each vendor should return list of paths
+for vendor, files in results.items():
+    test_is(isinstance(files, list), True)
+```
+
+``` python
+# Test error handling
+test_fail(
+    lambda: process_vendor(config, 'NonExistentVendor', base_path),
+    contains='not found'
+)
+```
+
+------------------------------------------------------------------------
+</doc><doc title="CLI" desc="Command-line interface for ctxt"># cli
+
+
+
+
+# CLI Commands
+
+## init
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/cli.py#L28"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### init
+
+>  init (force:bool=False)
+
+*Initialize ctxt config from default template*
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>force</td>
+<td>bool</td>
+<td>False</td>
+<td>Overwrite existing config</td>
+</tr>
+</tbody>
+</table>
+
+``` python
+with tempfile.TemporaryDirectory() as tmpdir:
+    old_cwd = os.getcwd()
+    try:
+        os.chdir(tmpdir)
+        
+        # Test 1: Fresh init
+        result = init()
+        test_eq(result, 0)
+        test_eq(Path('.ctxt.yml').exists(), True)
+        
+        # Test 2: Already exists without force
+        result = init()
+        test_eq(result, 1)
+        
+        # Test 3: Force overwrite
+        result = init(force=True)
+        test_eq(result, 0)
+    finally:
+        os.chdir(old_cwd)
+```
+
+    ✓ Created .ctxt.yml
+
+    Next steps:
+      1. Edit .ctxt.yml to customize tags
+      2. Create templates/ directory structure
+      3. Run 'ctxt build' to process templates
+    Config already exists: .ctxt.yml
+    Use --force to overwrite
+    ✓ Created .ctxt.yml
+
+    Next steps:
+      1. Edit .ctxt.yml to customize tags
+      2. Create templates/ directory structure
+      3. Run 'ctxt build' to process templates
+
+## config
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/cli.py#L57"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### config_cmd
+
+>  config_cmd (validate:bool=False)
+
+*Show and optionally validate configuration*
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>validate</td>
+<td>bool</td>
+<td>False</td>
+<td>Validate configuration</td>
+</tr>
+</tbody>
+</table>
+
+``` python
+# Test with real config
+result = config_cmd()
+test_eq(result, 0)
+
+result = config_cmd(validate=True)
+test_eq(result, 0)
+
+# Test with defaults (no config file)
+with tempfile.TemporaryDirectory() as tmpdir:
+    old_cwd = os.getcwd()
+    try:
+        os.chdir(tmpdir)
+        result = config_cmd()
+        test_eq(result, 0)
+    finally:
+        os.chdir(old_cwd)
+```
+
+    Config: /Users/vic/dev/repo/project/ctxt/.ctxt.yml
+    Tags: 7
+    Vendors: 2
+      • meta (project files)
+      • Cursor
+      • Claude_Coder
+    Config: /Users/vic/dev/repo/project/ctxt/.ctxt.yml
+    Tags: 7
+    Vendors: 2
+      • meta (project files)
+      • Cursor
+      • Claude_Coder
+
+    ✓ Configuration is valid
+    Config: (using defaults)
+    Tags: 7
+    Vendors: 2
+      • meta (project files)
+      • Cursor
+      • Claude_Coder
+
+## tags
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/cli.py#L93"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### tags
+
+>  tags (path:str|None=None)
+
+*Discover tags in templates*
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td>str | None</td>
+<td>None</td>
+<td>Path to template file or directory</td>
+</tr>
+</tbody>
+</table>
+
+``` python
+# Test with real templates
+result = tags()
+test_eq(result, 0)
+
+# Test with specific file
+template_file = Path('../templates/Cursor/project.mdc')
+if template_file.exists():
+    result = tags(path=str(template_file))
+    test_eq(result, 0)
+
+# Test with nonexistent path
+result = tags(path='/nonexistent/path')
+test_eq(result, 1)
+
+# Test with no templates dir
+with tempfile.TemporaryDirectory() as tmpdir:
+    old_cwd = os.getcwd()
+    try:
+        os.chdir(tmpdir)
+        result = tags()
+        test_eq(result, 1)
+    finally:
+        os.chdir(old_cwd)
+```
+
+    Tags in templates:
+      <Language-Name> ✓
+      <Project-Current-Phase> ✓
+      <Project-Name> ✓
+      <Project-Objective> ✓
+      <User-Alias> ✓
+      <User-Language-Note> ✓
+      <User-Profile> ✓
+      <date> ✗ (not defined)
+      <file_name> ✗ (not defined)
+      <name> ✗ (not defined)
+      <session_history> ✗ (not defined)
+    Tags in ../templates/Cursor/project.mdc:
+      <Project-Current-Phase> ✓
+      <Project-Name> ✓
+      <Project-Objective> ✓
+    Error: Path not found: /nonexistent/path
+    Templates directory not found at /private/var/folders/np/k2wj6f4s3rj0m9n0yt8pkk680000gn/T/tmpj5ky4svi/templates
+    Create 'templates/' or specify path with --path
+
+## build
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/cli.py#L150"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### build
+
+>  build (vendor:str|None=None, dry_run:bool=False)
+
+*Build templates from source*
+
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 25%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vendor</td>
+<td>str | None</td>
+<td>None</td>
+<td>Specific vendor to build (e.g., ‘Cursor’)</td>
+</tr>
+<tr>
+<td>dry_run</td>
+<td>bool</td>
+<td>False</td>
+<td>Show what would be done without doing it</td>
+</tr>
+</tbody>
+</table>
+
+``` python
+# Test build (dry run to avoid side effects)
+result = build(dry_run=True)
+test_eq(result, 0)
+
+# Test with nonexistent vendor
+result = build(vendor='NonExistent')
+test_eq(result, 1)
+```
+
+    DRY RUN - No files will be created
+    Building all templates...
+    Building NonExistent templates...
+    Error during build: Vendor 'NonExistent' not found in config
+
+------------------------------------------------------------------------
+
+<a href="https://github.com/civvic/ctxt/blob/main/ctxt/cli.py#L190"
+target="_blank" style="float:right; font-size:smaller">source</a>
+
+### chelp
+
+>  chelp ()
+
+*Show help for all console scripts*
+
+``` python
+chelp()
+```
+
+    ctxt                      Build templates from source
+    ctxt-config               Show and optionally validate configuration
+    ctxt-init                 Initialize ctxt config from default template
+    ctxt-tags                 Discover tags in templates
+
+------------------------------------------------------------------------
+</doc></optional></project>
