@@ -1,0 +1,22 @@
+---
+alwaysApply: true
+description: Python coding style preferences for nbdev projects
+---
+# Python Style
+
+## Type Hints
+- **Modern syntax**: Use `list[int]`, `dict[str, int]`, `str | None`
+- **Avoid typing imports**: No `from typing import List, Dict, Optional`
+- **Type safety first**: Minimize type checker warnings ("Hate Wiggly Reds")
+- **Be explicit**: Always add type hints to function signatures and class attributes
+
+## Docstrings
+- **Format**: Double quotes `"..."`
+- **Length**: One line preferred, expand only if essential context needed
+- **Content**: What it does, not how it works (code shows how)
+
+## Code Organization
+- **Imports**: Organize by system/project, exported/hidden (see @notebook-structure.mdc)
+- **One responsibility**: Functions do one thing well
+- **DRY**: Extract repeated patterns to helpers
+- **Readability**: Clear names > clever code

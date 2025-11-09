@@ -1,0 +1,50 @@
+---
+alwaysApply: true
+---
+INTERLOCK_SPEC
+Purpose: deterministic mapping CFG → CODE_CFG when INTERLOCK: on.
+
+NAMESPACES & PRECEDENCE
+- CFG (cognitive), CODE_CFG (code).
+- Precedence: explicit CODE_CFG > thread defaults > stored defaults > derived.
+- If a CODE_CFG dial is set, ignore mapping for that dial.
+
+ACTIVATION
+- INTERLOCK: on   # enable mapping
+- INTERLOCK: off  # disable mapping
+
+BRIDGE (applied only where CODE_CFG dial unset; clip to [0,10])
+Let Δ(x) = x - 5.
+1) CFG.Brevity → CODE_CFG.Brevity = CFG.Brevity
+2) CFG.Depth:
+   - CODE_CFG.Modularity += round(Δ(Depth)/2)
+   - CODE_CFG.Abstraction += round(Δ(Depth)/3)
+3) CFG.Empiricism:
+   - CODE_CFG.Determinism += round(Δ(Empiricism)/2)
+   - CODE_CFG.Standards   += round(Δ(Empiricism)/3)
+4) CFG.Formality:
+   - CODE_CFG.Standards   += round(Δ(Formality)/2)
+   - CODE_CFG.Explicitness+= round(Δ(Formality)/2)
+5) CFG.Abstraction:
+   - CODE_CFG.Abstraction = max(current, CFG.Abstraction)
+6) CFG.CounterNarrative:
+   - CODE_CFG.Standards   += round((5 - CounterNarrative)/3)
+7) CFG.Sarcasm, Metaphor, Jailbreak: no code effect.
+
+OPERATIONAL SHORTCUTS
+- If no CODE_PRESET/CODE_CFG provided, derive all unmapped dials from defaults then apply bridge.
+- Keep temperature low for Determinism ≥ 8.
+
+COMPOSITION EXAMPLES
+A) Cognition-led:
+   PRESET precise
+   INTERLOCK: on
+B) Production code with tight prose:
+   PRESET precise
+   CODE_PRESET production
+   CODE_CFG: Verbosity=4, Brevity=8
+   INTERLOCK: on
+C) Teaching session:
+   PRESET explain-new
+   CODE_PRESET pedagogical
+   INTERLOCK: on

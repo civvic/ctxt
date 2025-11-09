@@ -1,0 +1,60 @@
+# ============================================================================
+# ctxt Default Configuration
+# ============================================================================
+# This is the default configuration file. Copy this to your project root as
+# .ctxt.yml and customize as needed.
+
+# ----------------------------------------------------------------------------
+# Templates location and configuration: one per vendor
+# ----------------------------------------------------------------------------
+templates:
+  # Meta files - project context files
+  # Source: templates/meta/ (convention)
+  # Destination: meta/ (hardcoded)
+  meta: {}
+  
+  # Cursor AI IDE
+  # Source: templates/Cursor/ (convention)
+  # Destination: specified below
+  Cursor:
+    dest: ".cursor/rules/"
+  
+  # Claude Coder extension
+  # Source: templates/Claude_Coder/ (convention)
+  Claude_Coder:
+    dest: ".claude-coder/rules/"
+
+# ----------------------------------------------------------------------------
+# Tags - Template Variables
+# ----------------------------------------------------------------------------
+# These values will replace <Tag-Name> placeholders in templates
+tags:
+  Project-Name: myproject
+  Project-Objective: Describe your project objective here
+  Project-Current-Phase: Initial setup
+  
+  User-Alias: user
+  User-Profile: |
+    Add your developer profile here
+  User-Language-Note: ""
+  Language-Name: English
+
+# ----------------------------------------------------------------------------
+# General Configuration
+# ----------------------------------------------------------------------------
+general:
+  # Files to ignore during template processing
+  # Useful for auto-generated files you don't want to re-process
+  ignore: []
+
+  # Warn when tags are missing in templates
+  warn_missing_tags: true
+  
+  # Strict mode - fail on missing tags instead of warning
+  strict_mode: false
+  
+  # Maximum tag substitution recursion depth
+  max_recursion: 10
+  
+  # Preserve file timestamps when processing
+  preserve_timestamps: false

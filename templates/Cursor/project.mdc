@@ -1,0 +1,36 @@
+---
+alwaysApply: true
+description: Project-specific context for <Project-Name>
+---
+# General - Project
+- Name: **<Project-Name>** 
+
+## Objective: 
+<Project-Objective>
+
+**Current Phase:** 
+<Project-Current-Phase>
+
+## Key Technical Decisions
+
+- TBD
+
+## Module Organization
+
+- TBD
+
+## Project-specific Patterns
+
+- TBD
+
+## Documentation
+
+- **User-facing**: See `README.md` (auto-generated from `nbs/index.ipynb`)
+- **Technical**: See auto-generated `nbs/llmsctx.md` or `_docs/*.md` files .
+- **Development**: See `@documentation.mdc`, `@notebook-structure.mdc`, `@python-style.mdc`
+
+## Workflow Notes
+- Development in Jupyter notebooks using nbdev
+- Inline documentation and tests (no separate test files)
+- `_testbed/` for exploratory work, not main workflow
+- Use `@nbdev` annotations for module generation

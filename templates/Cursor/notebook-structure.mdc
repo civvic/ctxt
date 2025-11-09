@@ -1,0 +1,65 @@
+---
+alwaysApply: true
+description: Notebook structure patterns for nbdev notebooks
+---
+# Notebook Structure
+
+## Overall Pattern
+
+Notebooks follow a three-part structure:
+
+### 1. Prologue
+- `#| default_exp module.path` - Module export target
+- `#| export` + `from __future__ import annotations` - Future imports
+- Title markdown cell with description
+- `<!-- # Prologue -->` comment
+- Import cells (organized, see below)
+- Optional: Configuration/setup cells
+
+### 2. Main Content
+- Organized by functional sections (`# Section Name`)
+- Each section: Implementation → Example → Tests
+- Implementation cells marked `#| export`
+- Examples/tests follow immediately after
+- Use `fastcore.test` helpers (test_eq, test_fail, etc.)
+
+### 3. Epilogue (Colophon)
+- `<!-- # Colophon -->` comment
+- nbdev export boilerplate (hidden, eval:false)
+
+## Import Organization
+
+Four cells maximum (skip empty categories):
+
+**Cell 1: Exported System Imports** (`#| export`)
+```python
+#| export
+import re
+import json
+```
+
+**Cell 2: Exported Project Imports** (`#| export`)
+```python
+#| export
+from <Project-Name>.core import to_clipboard
+from <Project-Name>.hookpad.schema import Chord
+```
+
+**Cell 3: Hidden System Imports** (`#| hide`)
+```python
+#| hide
+import subprocess
+from fastcore.test import *
+from nbdev.showdoc import *
+```
+
+**Cell 4: Hidden Project Imports** (`#| hide`)
+```python
+#| hide
+from <Project-Name>.utils import helper_function
+```
+
+## Why This Organization?
+- Quick reference for humans
+- Avoids nbdev/Quarto inline import warnings
+- Clear separation: module vs notebook-only imports

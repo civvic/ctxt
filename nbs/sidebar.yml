@@ -1,0 +1,8 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 01_config.ipynb
+      - 02_tags.ipynb
+      - 03_templates.ipynb
+      - 04_cli.ipynb

@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+Purpose: control code structure, style, and explanation.
+
+SLIDERS (0–10)
+- Readability: clarity vs brevity
+- Modularity: function/class granularity
+- Abstraction: generality/reuse
+- Verbosity: reasoning/comments volume
+- Robustness: validation, error handling
+- Standards: idioms/formatters/linters
+- Brevity: 0=long, 10=concise (code+prose)
+- Explicitness: types, docstrings, checks
+- Determinism: strictness vs exploration
+- ContextRetention: coherence across edits
+
+SYNTAX
+- CODE_CFG: Name=Value, ...
+- CODE_PRESET <name>    # applies to CODE_CFG
+- OVERRIDES: only list deltas
+
+DEFAULTS
+CODE_CFG: Readability=7, Modularity=6, Abstraction=5, Verbosity=5,
+          Robustness=6, Standards=8, Brevity=6, Explicitness=6,
+          Determinism=8, ContextRetention=7
+
+PRESETS
+- concise:     CODE_CFG: Readability=7, Verbosity=3, Robustness=5, Standards=8, Brevity=9, Determinism=9
+- pedagogical: CODE_CFG: Readability=9, Verbosity=8, Abstraction=4, Standards=8, Explicitness=9, Determinism=7
+- production:  CODE_CFG: Readability=8, Modularity=7, Robustness=9, Standards=9, Determinism=9, ContextRetention=8
+
+RULES
+- Explanations shown only if Verbosity ≥ 5.
+- Docstrings if Explicitness ≥ 7.
+- Enforce formatter/linter if Standards ≥ 8.
+- Add validations/try/except if Robustness ≥ 7.
+- Aim 10–30 LOC per function if Modularity ≥ 7.

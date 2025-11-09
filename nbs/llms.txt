@@ -1,0 +1,26 @@
+# ctxt
+
+> Simple tool for managing and generating LLM context files from templates. It helps you maintain IDE rules, prompt templates, and meta-programming documents with tag-based substitutions.  
+
+- 🏷️ **Tag Substitution**: Simple `<Tag-Name>` format with recursive support  
+- 📁 **Multi-Vendor Support**: Generate rules for Cursor, Claude Coder, and more  
+- ⚙️ **Flexible Configuration**: YAML-based configuration with sensible defaults  
+- 🔍 **Tag Discovery**: Find all tags used in your templates  
+- 🚀 **CLI Interface**: Easy-to-use command-line tools  
+
+Perfect for managing project-specific LLM rules, documentation templates, and prompt libraries across different AI coding assistants.
+
+## Docs
+
+- [README](https://raw.githubusercontent.com/civvic/ctxt/refs/heads/main/README.md): Quick start guide and overview
+
+## API
+
+- [API List](https://civvic.github.io/ctxt/apilist.txt): A succint list of all functions and methods in ctxt.
+
+## Optional
+
+- [Config](https://civvic.github.io/ctxt/config.html.md): Configuration loading and validation for ctxt
+- [Tags](https://civvic.github.io/ctxt/tags.html.md): Tag discovery and substitution for template processing
+- [Templates](https://civvic.github.io/ctxt/templates.html.md): Template file discovery and processing
+- [CLI](https://civvic.github.io/ctxt/cli.html.md): Command-line interface for ctxt
