@@ -153,8 +153,10 @@ checklink/cookies.txt
 
 .specstory/**
 
-# ctxt ephemeral workspace (v0.1+)
-.ctxt.work/
+# ctxt personal workspace (v0.1+)
+# Note: .ctxt/ is a nested git repository. Added to .git/info/exclude locally.
+#       Users should add to their own .git/info/exclude if needed.
+.ctxt.work/     # Ephemeral snapshots
 
 _testbed
 .cursor
