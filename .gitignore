@@ -153,6 +153,9 @@ checklink/cookies.txt
 
 .specstory/**
 
+# ctxt ephemeral workspace (v0.1+)
+.ctxt.work/
+
 _testbed
 .cursor
 meta
